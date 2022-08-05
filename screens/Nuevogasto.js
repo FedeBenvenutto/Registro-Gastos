@@ -3,9 +3,9 @@ import { View, Text, TextInput, SafeAreaView, StyleSheet} from 'react-native';
 import { Button } from '@rneui/themed';
 import SelectList from 'react-native-dropdown-select-list';
 import { db } from '../database/firebase.js';
-import { addDoc, collection, setDoc, doc } from 'firebase/firestore';
+import { addDoc, collection} from 'firebase/firestore';
 
-const Nuevogasto = () => {
+const Nuevogasto = (props) => {
     const [selected1, setSelected1] = useState("");
     const [selected2, setSelected2] = useState("");
     const [gasto, setGasto]= useState({
@@ -15,7 +15,6 @@ const Nuevogasto = () => {
       Comentario: "",
     });
     const saveNewGasto = async () => {
-      alert("hoola")
       if (gasto.Monto === "") {
         alert("Ingrese un monto");
       } else {
@@ -26,7 +25,14 @@ const Nuevogasto = () => {
             Categoria: gasto.Categoria,
             FormadePago: gasto.FormadePago,
             Comentario: gasto.Comentario,
+            createdAt: new Date()
           });
+          setGasto({
+            Monto: "",
+            Categoria: "",
+            FormadePago: "",
+            Comentario: "",
+           })
           alert("Agregado");
         } catch (e) {
           console.log(e)
@@ -66,6 +72,7 @@ const Nuevogasto = () => {
           keyboardType= "numeric"
           name="Monto"
           placeholder="0"
+          value={gasto.Monto}
           onChangeText={(value) => setGasto({...gasto, "Monto": value}) }
         ></TextInput>
       </SafeAreaView>
@@ -95,7 +102,7 @@ const Nuevogasto = () => {
           style={styles.input3}
           multiline
           name="precioHora"
-          // placeholder="0"
+          value={gasto.Comentario}
           onChangeText={(value) => setGasto({...gasto, "Comentario": value})}
         ></TextInput>
       </SafeAreaView>
@@ -104,6 +111,14 @@ const Nuevogasto = () => {
       containerStyle={{width: 320, marginHorizontal: 0, marginVertical: 30, alignContent: "center"}}
       title="Agregar"
       onPress={()=> saveNewGasto()} 
+      // onPress={()=> {saveNewGasto}} 
+      /> 
+      </View>
+      <View style={styles.buttton}>
+      <Button 
+      containerStyle={{width: 320, marginHorizontal: 0, marginVertical: 30, alignContent: "center"}}
+      title="Ver gastos"
+      onPress={()=> props.navigation.navigate("Vergastos")} 
       // onPress={()=> {saveNewGasto}} 
       /> 
       </View>

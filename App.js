@@ -10,10 +10,10 @@ function MyStack () {
   return (
     <Stack.Navigator>
       <Stack.Screen 
-      name= "Agregar gasto" 
+      name= "Nuevogasto" 
       component={Nuevogasto} />
       <Stack.Screen 
-      name= "Ver gastos" 
+      name= "Vergastos" 
       component={Vergastos}/>
     </Stack.Navigator>
   )
