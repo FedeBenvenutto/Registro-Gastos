@@ -1,4 +1,6 @@
-import React, { useState,  useContext } from "react";
+import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../database/firebase.js";
+import React, { useEffect, useState, useContext, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -9,23 +11,22 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Button } from "@rneui/themed";
-import { db } from "../database/firebase.js";
-import { addDoc, collection } from "firebase/firestore";
 import SelectDropdown from "react-native-select-dropdown";
 import { categorias, formadePago } from "../database/Listas.js";
 import { FechaContext } from "../Context/FechaContext.js";
+import { useNavigation } from '@react-navigation/native';
 
-
-const Nuevogasto = (props) => {
+const GastoDetalle = (props) => {
+  // HOOKS NECESARIOS
   const {Mes, Ano}= useContext(FechaContext)
   const fechaDb= Mes+"-"+Ano
-//   const navigation = useNavigation();
-//   useEffect(() => {
-//     navigation.setOptions({
-//         headerRight: () => <Text onPress={() => props.navigation.navigate("CambioColeccion")}> Mes: {fechaDb}</Text>  
-//     })
-// },[])
-  
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+        headerRight: () => <Text onPress={() => props.navigation.navigate("CambioColeccion")}> Mes: {fechaDb}</Text>  
+    })
+},[navigation])
+
   const [gasto, setGasto] = useState({
     Monto: "",
     Categoria: "",
@@ -34,37 +35,72 @@ const Nuevogasto = (props) => {
     CategoriaIndex: "",
     FormadePagoIndex: "",
   });
-  const [loading, setLoading] = useState(false);
-  const saveNewGasto = async () => {
-    if (gasto.Monto === "") {
-      Alert.alert("", "Ingrese un monto");
-    } else {
-      try {
-        setLoading(true);
-        const docRef = await addDoc(collection(db, fechaDb), {
-          Monto: gasto.Monto,
-          Categoria: gasto.Categoria,
-          FormadePago: gasto.FormadePago,
-          Comentario: gasto.Comentario,
-          CategoriaIndex: gasto.CategoriaIndex,
-          FormadePagoIndex: gasto.FormadePagoIndex,
-          createdAt: new Date(),
-        });
-        setGasto({
-          Monto: "",
-          Categoria: "",
-          FormadePago: "",
-          Comentario: "",
-          CategoriaIndex: "",
-          FormadePagoIndex: "",
-        });
-        setLoading(false);
-        Alert.alert("", "Agregado");
-      } catch (e) {
-        alert(e);
-      }
+
+  const [loading, setLoading] = useState(true);
+
+  //FUNCIONES
+
+  const getUserById = async (id) => {
+    const docRef = doc(db, fechaDb, id);
+    await getDoc(docRef).then((doc) => {
+      const gasto = doc.data();
+      setGasto({ ...gasto, id: doc.id });
+      setLoading(false);
+    });
+  };
+
+  const borrarGasto = async () => {
+    try {
+      setLoading(true);
+      const docRef = doc(db, fechaDb, props.route.params.gastoId);
+      await deleteDoc(docRef);
+      setLoading(false);
+      Alert.alert("", "Borrado");
+      props.navigation.navigate("Vergastos");
+    } catch (e) {
+      alert(e);
     }
   };
+
+  const alertaConfirmacion = () => {
+    Alert.alert(
+      "Eliminando gasto",
+      "Esta seguro?",
+      [
+        { text: "Confirmar", onPress: () => borrarGasto() },
+        { text: "Cancelar", onPress: () => console.log("canceled") },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
+
+  const actualizarGasto = async () => {
+    try {
+      setLoading(true);
+      const docRef = doc(db, fechaDb, props.route.params.gastoId);
+      const data = {
+        Monto: gasto.Monto,
+        Categoria: gasto.Categoria,
+        FormadePago: gasto.FormadePago,
+        Comentario: gasto.Comentario,
+        CategoriaIndex: gasto.CategoriaIndex,
+        FormadePagoIndex: gasto.FormadePagoIndex,
+        createdAt: new Date(),
+      };
+      await setDoc(docRef, data);
+      setLoading(false);
+      Alert.alert("", "Actualizado");
+      props.navigation.navigate("Vergastos");
+    } catch (e) {
+      alert(e);
+    }
+  };
+
+  useEffect(() => {
+    getUserById(props.route.params.gastoId);
+  }, []);
 
   if (loading) {
     return (
@@ -73,14 +109,10 @@ const Nuevogasto = (props) => {
       </View>
     );
   }
+
   return (
-    
     <View style={styles.container}>
-      <Text 
-      style={styles.fechaDb} 
-      onPress={() => props.navigation.navigate("CambioColeccion")}> 
-      Mes: {fechaDb} </Text>
-      <Text style={styles.titulo}>INGRESO NUEVO GASTO</Text>
+      <Text style={styles.titulo}>DETALLE DEL GASTO</Text>
       <SafeAreaView style={styles.formulario}>
         <Text style={styles.text}> Monto</Text>
         <TextInput
@@ -104,7 +136,9 @@ const Nuevogasto = (props) => {
             });
           }}
           buttonStyle={styles.dropdown}
+          defaultValueByIndex={gasto.CategoriaIndex}
           defaultButtonText={"Seleccione una opción"}
+          rowTextStyle={{ textAlign: "left" }}
         />
       </SafeAreaView>
       <SafeAreaView style={styles.formulario}>
@@ -119,7 +153,9 @@ const Nuevogasto = (props) => {
               FormadePagoIndex: index,
             });
           }}
+          defaultValueByIndex={gasto.FormadePagoIndex}
           defaultButtonText={"Seleccione una opción"}
+          rowTextStyle={{ textAlign: "left" }}
         />
       </SafeAreaView>
       <SafeAreaView style={styles.formulario}>
@@ -134,15 +170,31 @@ const Nuevogasto = (props) => {
       <View style={styles.buttton}>
         <Button
           containerStyle={styles.buttton}
-          title="Agregar"
-          onPress={() => saveNewGasto()}
+          title="Actualizar"
+          onPress={() => actualizarGasto()}
         />
       </View>
       <View style={styles.buttton}>
         <Button
           containerStyle={styles.buttton}
-          title="Ver gastos"
+          title="Borrar"
+          onPress={() => {
+            alertaConfirmacion();
+          }}
+        />
+      </View>
+      <View style={styles.buttton}>
+        <Button
+          containerStyle={styles.buttton}
+          title="Volver"
           onPress={() => props.navigation.navigate("Vergastos")}
+        />
+      </View>
+      <View style={styles.buttton}>
+        <Button
+          containerStyle={styles.buttton}
+          title="Agregar nuevo gasto"
+          onPress={() => props.navigation.navigate("Nuevogasto")}
         />
       </View>
     </View>
@@ -150,27 +202,6 @@ const Nuevogasto = (props) => {
 };
 
 const styles = StyleSheet.create({
-  fechaDb:{
-    position: 'absolute',
-    marginTop: 0,
-    textAlign: 'right',
-    width: '100%',
-    fontSize: 16
-    
-    
-  },
-  titulo: {
-    marginTop: 80,
-    alignItems: "center",
-    fontSize: 30,
-    justifyContent: "center",
-    textAlign: "center",
-    color: "blue",
-    marginBottom: 50,
-  },
-  container: {
-    marginTop: 0,
-  },
   loader: {
     left: 0,
     right: 0,
@@ -179,6 +210,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  titulo: {
+    alignItems: "center",
+    fontSize: 30,
+    justifyContent: "center",
+    textAlign: "center",
+    color: "blue",
+    marginBottom: 50,
+  },
+  container: {
+    marginTop: 40,
   },
   formulario: {
     flexDirection: "row",
@@ -212,10 +255,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: "center",
   },
-  hidden: {
-    hidden: false,
-    height: 0,
-  },
   buttton: {
     width: 320,
     alignContent: "center",
@@ -232,8 +271,9 @@ const styles = StyleSheet.create({
     borderColor: "#444",
     borderRadius: 10,
     width: 200,
+    alignContent: "center",
     marginTop: 10,
   },
 });
 
-export default Nuevogasto;
+export default GastoDetalle;
