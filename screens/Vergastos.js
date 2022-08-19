@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { Button, StyleSheet, View, ActivityIndicator, Text } from "react-native";
-import { ListItem } from "@rneui/themed";
+import { ListItem, SpeedDial, Avatar } from "@rneui/themed";
 import { ScrollView } from "react-native-gesture-handler";
 import { db } from "../database/firebase.js";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { FechaContext } from "../Context/FechaContext.js";
 import { useNavigation } from '@react-navigation/native';
+import { categorias, color } from "../database/Listas.js";
 
 const Vergastos = (props) => {
   const [gastos, setGastos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {Mes, Ano}= useContext(FechaContext)
-  const fechaDb= Mes+"-"+Ano
+  const [open, setOpen] = useState(false);
+  const {fechaDb}= useContext(FechaContext)
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -28,6 +29,7 @@ const Vergastos = (props) => {
           id: doc.id,
           Monto: doc.data().Monto,
           Categoria: doc.data().Categoria,
+          CategoriaIndex: doc.data().CategoriaIndex,
           FormadePago: doc.data().FormadePago,
           Comentario: doc.data().Comentario,
           createdAt: doc.data().createdAt,
@@ -46,13 +48,15 @@ const Vergastos = (props) => {
   }
 
   return (
+    <>
+    <View>
     <ScrollView>
-      {
+      {/* {
         <Button
           onPress={() => props.navigation.navigate("Nuevogasto")}
           title="Añadir nuevo gasto"
         />
-      }
+      } */}
       {gastos.map((gasto) => {
         return (
           <ListItem
@@ -64,7 +68,13 @@ const Vergastos = (props) => {
               });
             }}
           >
-            <ListItem.Chevron />
+            {/* <ListItem.Chevron /> */}
+            <Avatar
+          size={45}
+          rounded
+          title={categorias[gasto.CategoriaIndex][0]}
+          containerStyle={{ backgroundColor: color[gasto.CategoriaIndex]}}
+        />
             <ListItem.Content>
               <ListItem.Title>Monto: {gasto.Monto}</ListItem.Title>
               <ListItem.Subtitle>
@@ -85,6 +95,28 @@ const Vergastos = (props) => {
         );
       })}
     </ScrollView>
+    </View>
+    <SpeedDial
+          style={styles.speedDial}
+          color={'#606e8c'}
+          isOpen={open}
+          icon={{ name: 'add', color: '#fff' }}
+          openIcon={{ name: 'close', color: '#fff' }}
+          onOpen={() => setOpen(!open)}
+          onClose={() => setOpen(!open)}
+        >
+          <SpeedDial.Action
+            icon={{ name: 'add', color: '#fff' }}
+            title="Añadir nuevo gasto"
+            onPress={() => props.navigation.navigate("Nuevogasto")}
+          />
+          <SpeedDial.Action
+            icon={{ name: 'done-outline', color: '#fff' }}
+            title="Totales"
+            onPress={() => props.navigation.navigate("Totales")}
+          />
+        </SpeedDial>
+    </>
   );
 };
 

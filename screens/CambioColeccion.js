@@ -5,6 +5,7 @@ import {
   TextInput,
   SafeAreaView,
   StyleSheet,
+  Alert
 } from "react-native";
 import { Button } from "@rneui/themed";
 import SelectDropdown from "react-native-select-dropdown";
@@ -18,11 +19,11 @@ const CambioColeccion = (props) => {
   const AnoActual= (FechaActual.getFullYear()).toString();
   const Meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
   const MesActual= FechaActual.getMonth()
-  const {Mes, Ano, setMes, setAno}= useContext(FechaContext)
-  const fechaDb= Mes+"-"+Ano
+  const {fechaDb, setMes, setAno}= useContext(FechaContext)
+  
   const navigation = useNavigation();
   var mesSeleccionado;
-  var anoSeleccionado;
+  var anoSeleccionado=AnoActual
   useLayoutEffect(() => {
     navigation.setOptions({
         headerRight: () => <Text> Mes actual: {fechaDb}</Text>  
@@ -30,9 +31,12 @@ const CambioColeccion = (props) => {
 },[navigation])
 
   const ConfirmarCambio = () => {
+      if (anoSeleccionado.length != 4 || anoSeleccionado < 2000) {
+        Alert.alert("", "Ingrese correctamente el año")
+      } else {
       anoSeleccionado ? setAno(anoSeleccionado) : setAno(AnoActual);
       mesSeleccionado ? setMes(mesSeleccionado) : setMes(Meses[MesActual]) ;
-      props.navigation.navigate("Nuevogasto")
+      props.navigation.navigate("Nuevogasto")}
     };
   
     return (
@@ -52,7 +56,7 @@ const CambioColeccion = (props) => {
           <Text style={styles.text}>Año</Text>
           <TextInput
             style={styles.input2}
-            defaultValue={Ano}
+            defaultValue={AnoActual}
             onChangeText={(value) => anoSeleccionado=value}
           ></TextInput>
         </SafeAreaView>

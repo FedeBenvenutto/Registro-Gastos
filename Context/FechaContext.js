@@ -8,13 +8,13 @@
     const MesActual= FechaActual.getMonth()
     const [Mes, setMes] = useState(Meses[MesActual]);
     const [Ano, setAno] = useState(AnoActual);
+    const fechaDb= Mes+"-"+Ano
     return (
       <FechaContext.Provider
         value={{
-          Mes,
           setMes,
-          Ano,
-          setAno
+          setAno,
+          fechaDb
         }}
         >
         {children}

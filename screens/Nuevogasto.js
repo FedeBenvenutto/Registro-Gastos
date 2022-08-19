@@ -8,24 +8,18 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { Button } from "@rneui/themed";
+import { Button, SpeedDial } from "@rneui/themed";
 import { db } from "../database/firebase.js";
 import { addDoc, collection } from "firebase/firestore";
 import SelectDropdown from "react-native-select-dropdown";
 import { categorias, formadePago } from "../database/Listas.js";
 import { FechaContext } from "../Context/FechaContext.js";
+import { ScrollView } from "react-native-gesture-handler";
 
 
 const Nuevogasto = (props) => {
-  const {Mes, Ano}= useContext(FechaContext)
-  const fechaDb= Mes+"-"+Ano
-//   const navigation = useNavigation();
-//   useEffect(() => {
-//     navigation.setOptions({
-//         headerRight: () => <Text onPress={() => props.navigation.navigate("CambioColeccion")}> Mes: {fechaDb}</Text>  
-//     })
-// },[])
-  
+  const {fechaDb}= useContext(FechaContext)
+    
   const [gasto, setGasto] = useState({
     Monto: "",
     Categoria: "",
@@ -35,14 +29,19 @@ const Nuevogasto = (props) => {
     FormadePagoIndex: "",
   });
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const saveNewGasto = async () => {
-    if (gasto.Monto === "") {
-      Alert.alert("", "Ingrese un monto");
-    } else {
+    let monto = Number(gasto.Monto.replace(/,/g, '.'));
+    if (!monto || monto < 0) {
+      Alert.alert("", "Ingrese un monto válido");
+    } else if (!gasto.CategoriaIndex || !gasto.FormadePagoIndex)
+      {Alert.alert("", "Complete todos los campos")}
+      else {
       try {
+        console.log(monto)
         setLoading(true);
         const docRef = await addDoc(collection(db, fechaDb), {
-          Monto: gasto.Monto,
+          Monto: monto,
           Categoria: gasto.Categoria,
           FormadePago: gasto.FormadePago,
           Comentario: gasto.Comentario,
@@ -74,7 +73,7 @@ const Nuevogasto = (props) => {
     );
   }
   return (
-    
+    <>
     <View style={styles.container}>
       <Text 
       style={styles.fechaDb} 
@@ -137,15 +136,45 @@ const Nuevogasto = (props) => {
           title="Agregar"
           onPress={() => saveNewGasto()}
         />
+        
       </View>
+      
       <View style={styles.buttton}>
-        <Button
+        {/* <Button
           containerStyle={styles.buttton}
           title="Ver gastos"
           onPress={() => props.navigation.navigate("Vergastos")}
         />
       </View>
+      <View style={styles.buttton}>
+        <Button
+          containerStyle={styles.buttton}
+          title="Totales"
+          onPress={() => props.navigation.navigate("Totales")}
+        /> */}
+      </View>
     </View>
+    <SpeedDial
+          style={styles.speedDial}
+          color={'#606e8c'}
+          isOpen={open}
+          icon={{ name: 'add', color: '#fff' }}
+          openIcon={{ name: 'close', color: '#fff' }}
+          onOpen={() => setOpen(!open)}
+          onClose={() => setOpen(!open)}
+        >
+          <SpeedDial.Action
+            icon={{ name: 'done-outline', color: '#fff' }}
+            title="Totales"
+            onPress={() => props.navigation.navigate("Totales")}
+          />
+          <SpeedDial.Action
+            icon={{ name: 'add-chart', color: '#fff' }}
+            title="Ver gastos"
+            onPress={() => props.navigation.navigate("Vergastos")}
+          />
+        </SpeedDial>
+    </>
   );
 };
 
@@ -167,6 +196,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "blue",
     marginBottom: 50,
+    fontWeight: 'bold'
   },
   container: {
     marginTop: 0,
@@ -234,6 +264,9 @@ const styles = StyleSheet.create({
     width: 200,
     marginTop: 10,
   },
+  speedDial: {
+
+  }
 });
 
 export default Nuevogasto;

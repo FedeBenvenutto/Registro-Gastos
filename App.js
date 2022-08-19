@@ -6,6 +6,7 @@ import Vergastos from "./screens/Vergastos";
 import Nuevogasto from "./screens/Nuevogasto";
 import GastoDetalle from "./screens/GastoDetalle";
 import CambioColeccion from "./screens/CambioColeccion";
+import Totales from "./screens/Totales";
 import {FechaProvider} from "./Context/FechaContext";
 
 const Stack = createStackNavigator();
@@ -31,6 +32,11 @@ function MyStack() {
         name="CambioColeccion"
         component={CambioColeccion}
         options={{ title: "Cambio de fecha" }}
+      />
+      <Stack.Screen
+        name="Totales"
+        component={Totales}
+        options={{ title: "Totales" }}
       />
     </Stack.Navigator>
   );

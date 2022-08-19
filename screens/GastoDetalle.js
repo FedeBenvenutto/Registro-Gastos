@@ -1,6 +1,7 @@
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../database/firebase.js";
 import React, { useEffect, useState, useContext, useLayoutEffect } from "react";
+import { SpeedDial } from "@rneui/base";
 import {
   View,
   Text,
@@ -18,8 +19,8 @@ import { useNavigation } from '@react-navigation/native';
 
 const GastoDetalle = (props) => {
   // HOOKS NECESARIOS
-  const {Mes, Ano}= useContext(FechaContext)
-  const fechaDb= Mes+"-"+Ano
+  const [open, setOpen] = useState(false);
+  const {fechaDb}= useContext(FechaContext)
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -65,7 +66,7 @@ const GastoDetalle = (props) => {
   const alertaConfirmacion = () => {
     Alert.alert(
       "Eliminando gasto",
-      "Esta seguro?",
+      "¿Esta seguro?",
       [
         { text: "Confirmar", onPress: () => borrarGasto() },
         { text: "Cancelar", onPress: () => console.log("canceled") },
@@ -111,6 +112,7 @@ const GastoDetalle = (props) => {
   }
 
   return (
+    <>
     <View style={styles.container}>
       <Text style={styles.titulo}>DETALLE DEL GASTO</Text>
       <SafeAreaView style={styles.formulario}>
@@ -177,13 +179,14 @@ const GastoDetalle = (props) => {
       <View style={styles.buttton}>
         <Button
           containerStyle={styles.buttton}
-          title="Borrar"
+          title="Eliminar"
+          buttonStyle={{ backgroundColor: 'orangered',}}
           onPress={() => {
             alertaConfirmacion();
           }}
         />
       </View>
-      <View style={styles.buttton}>
+      {/* <View style={styles.buttton}>
         <Button
           containerStyle={styles.buttton}
           title="Volver"
@@ -196,8 +199,36 @@ const GastoDetalle = (props) => {
           title="Agregar nuevo gasto"
           onPress={() => props.navigation.navigate("Nuevogasto")}
         />
-      </View>
+      </View> */}
     </View>
+    <SpeedDial
+          style={styles.speedDial}
+          color={'#606e8c'}
+          isOpen={open}
+          icon={{ name: 'add', color: '#fff' }}
+          openIcon={{ name: 'close', color: '#fff' }}
+          onOpen={() => setOpen(!open)}
+          onClose={() => setOpen(!open)}
+        >
+          <SpeedDial.Action
+            icon={{ name: 'add', color: '#fff' }}
+            title="Añadir nuevo gasto"
+            onPress={() => props.navigation.navigate("Nuevogasto")}
+          />
+          <SpeedDial.Action
+            icon={{ name: 'add-chart', color: '#fff' }}
+            title="Ver gastos"
+            onPress={() => props.navigation.navigate("Vergastos")}
+          />
+        <SpeedDial.Action
+            icon={{ name: 'done-outline', color: '#fff' }}
+            title="Totales"
+            onPress={() => props.navigation.navigate("Totales")}
+          />
+        </SpeedDial>
+
+
+    </>
   );
 };
 
@@ -219,6 +250,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "blue",
     marginBottom: 50,
+    fontWeight: 'bold'
   },
   container: {
     marginTop: 40,
