@@ -1,4 +1,4 @@
-import React, { useState,  useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -8,37 +8,34 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { Button, SpeedDial } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 import { db } from "../database/firebase.js";
 import { addDoc, collection } from "firebase/firestore";
 import SelectDropdown from "react-native-select-dropdown";
 import { categorias, formadePago } from "../database/Listas.js";
 import { FechaContext } from "../Context/FechaContext.js";
-import { ScrollView } from "react-native-gesture-handler";
-
+import SpeedDialComp from "../Component/SpeedDial.js";
 
 const Nuevogasto = (props) => {
-  const {fechaDb}= useContext(FechaContext)
-    
+  const { fechaDb } = useContext(FechaContext);
+
   const [gasto, setGasto] = useState({
     Monto: "",
     Categoria: "",
     FormadePago: "",
     Comentario: "",
-    CategoriaIndex: "",
-    FormadePagoIndex: "",
+    CategoriaIndex: "x",
+    FormadePagoIndex: "x",
   });
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
   const saveNewGasto = async () => {
-    let monto = Number(gasto.Monto.replace(/,/g, '.'));
+    let monto = Number(gasto.Monto.replace(/,/g, "."));
     if (!monto || monto < 0) {
       Alert.alert("", "Ingrese un monto válido");
-    } else if (!gasto.CategoriaIndex || !gasto.FormadePagoIndex)
-      {Alert.alert("", "Complete todos los campos")}
-      else {
+    } else if (isNaN(gasto.CategoriaIndex) || isNaN(gasto.FormadePagoIndex)) {
+      Alert.alert("", "Complete todos los campos");
+    } else {
       try {
-        console.log(monto)
         setLoading(true);
         const docRef = await addDoc(collection(db, fechaDb), {
           Monto: monto,
@@ -60,6 +57,7 @@ const Nuevogasto = (props) => {
         setLoading(false);
         Alert.alert("", "Agregado");
       } catch (e) {
+        setLoading(false);
         alert(e);
       }
     }
@@ -69,124 +67,99 @@ const Nuevogasto = (props) => {
     return (
       <View style={styles.loader}>
         <ActivityIndicator size="large" color="#9E9E9E" />
+        <Button
+          buttonStyle={{ backgroundColor: "gray" }}
+          title="Volver"
+          onPress={() => {
+            setLoading(false);
+            props.navigation.navigate("Nuevogasto");
+          }}
+        />
       </View>
     );
   }
   return (
     <>
-    <View style={styles.container}>
-      <Text 
-      style={styles.fechaDb} 
-      onPress={() => props.navigation.navigate("CambioColeccion")}> 
-      Mes: {fechaDb} </Text>
-      <Text style={styles.titulo}>INGRESO NUEVO GASTO</Text>
-      <SafeAreaView style={styles.formulario}>
-        <Text style={styles.text}> Monto</Text>
-        <TextInput
-          style={styles.input2}
-          keyboardType="numeric"
-          name="Monto"
-          placeholder="0"
-          value={gasto.Monto}
-          onChangeText={(value) => setGasto({ ...gasto, Monto: value })}
-        ></TextInput>
-      </SafeAreaView>
-      <SafeAreaView style={styles.formulario}>
-        <Text style={styles.text}> Categoría</Text>
-        <SelectDropdown
-          data={categorias}
-          onSelect={(selectedItem, index) => {
-            setGasto({
-              ...gasto,
-              Categoria: selectedItem,
-              CategoriaIndex: index,
-            });
-          }}
-          buttonStyle={styles.dropdown}
-          defaultButtonText={"Seleccione una opción"}
-        />
-      </SafeAreaView>
-      <SafeAreaView style={styles.formulario}>
-        <Text style={styles.text}> Forma de pago </Text>
-        <SelectDropdown
-          data={formadePago}
-          buttonStyle={styles.dropdown}
-          onSelect={(selectedItem, index) => {
-            setGasto({
-              ...gasto,
-              FormadePago: selectedItem,
-              FormadePagoIndex: index,
-            });
-          }}
-          defaultButtonText={"Seleccione una opción"}
-        />
-      </SafeAreaView>
-      <SafeAreaView style={styles.formulario}>
-        <Text style={styles.text}> Comentario</Text>
-        <TextInput
-          style={styles.input3}
-          multiline
-          value={gasto.Comentario}
-          onChangeText={(value) => setGasto({ ...gasto, Comentario: value })}
-        ></TextInput>
-      </SafeAreaView>
-      <View style={styles.buttton}>
-        <Button
-          containerStyle={styles.buttton}
-          title="Agregar"
-          onPress={() => saveNewGasto()}
-        />
-        
-      </View>
-      
-      <View style={styles.buttton}>
-        {/* <Button
-          containerStyle={styles.buttton}
-          title="Ver gastos"
-          onPress={() => props.navigation.navigate("Vergastos")}
-        />
-      </View>
-      <View style={styles.buttton}>
-        <Button
-          containerStyle={styles.buttton}
-          title="Totales"
-          onPress={() => props.navigation.navigate("Totales")}
-        /> */}
-      </View>
-    </View>
-    <SpeedDial
-          style={styles.speedDial}
-          color={'#606e8c'}
-          isOpen={open}
-          icon={{ name: 'add', color: '#fff' }}
-          openIcon={{ name: 'close', color: '#fff' }}
-          onOpen={() => setOpen(!open)}
-          onClose={() => setOpen(!open)}
+      <View style={styles.container}>
+        <Text
+          style={styles.fechaDb}
+          onPress={() => props.navigation.navigate("CambioColeccion")}
         >
-          <SpeedDial.Action
-            icon={{ name: 'done-outline', color: '#fff' }}
-            title="Totales"
-            onPress={() => props.navigation.navigate("Totales")}
+          Mes: {fechaDb}{" "}
+        </Text>
+        <Text style={styles.titulo}>INGRESO NUEVO GASTO</Text>
+        <SafeAreaView style={styles.formulario}>
+          <Text style={styles.text}> Monto</Text>
+          <TextInput
+            style={styles.input2}
+            keyboardType="numeric"
+            name="Monto"
+            placeholder="0"
+            value={gasto.Monto}
+            onChangeText={(value) => setGasto({ ...gasto, Monto: value })}
+          ></TextInput>
+        </SafeAreaView>
+        <SafeAreaView style={styles.formulario}>
+          <Text style={styles.text}> Categoría</Text>
+          <SelectDropdown
+            data={categorias}
+            onSelect={(selectedItem, index) => {
+              setGasto({
+                ...gasto,
+                Categoria: selectedItem,
+                CategoriaIndex: index,
+              });
+            }}
+            buttonStyle={styles.dropdown}
+            defaultButtonText={"Seleccione una opción"}
           />
-          <SpeedDial.Action
-            icon={{ name: 'add-chart', color: '#fff' }}
-            title="Ver gastos"
-            onPress={() => props.navigation.navigate("Vergastos")}
+        </SafeAreaView>
+        <SafeAreaView style={styles.formulario}>
+          <Text style={styles.text}> Forma de pago </Text>
+          <SelectDropdown
+            data={formadePago}
+            buttonStyle={styles.dropdown}
+            onSelect={(selectedItem, index) => {
+              setGasto({
+                ...gasto,
+                FormadePago: selectedItem,
+                FormadePagoIndex: index,
+              });
+            }}
+            defaultButtonText={"Seleccione una opción"}
           />
-        </SpeedDial>
+        </SafeAreaView>
+        <SafeAreaView style={styles.formulario}>
+          <Text style={styles.text}> Comentario</Text>
+          <TextInput
+            style={styles.input3}
+            multiline
+            value={gasto.Comentario}
+            onChangeText={(value) => setGasto({ ...gasto, Comentario: value })}
+          ></TextInput>
+        </SafeAreaView>
+        <View style={styles.buttton}>
+          <Button
+            containerStyle={styles.buttton}
+            title="Agregar"
+            onPress={() => saveNewGasto()}
+          />
+        </View>
+
+        <View style={styles.buttton}></View>
+      </View>
+      <SpeedDialComp />
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  fechaDb:{
-    position: 'absolute',
+  fechaDb: {
+    position: "absolute",
     marginTop: 0,
-    textAlign: 'right',
-    width: '100%',
-    fontSize: 16
-    
-    
+    textAlign: "right",
+    width: "100%",
+    fontSize: 16,
   },
   titulo: {
     marginTop: 80,
@@ -196,7 +169,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "blue",
     marginBottom: 50,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   container: {
     marginTop: 0,
@@ -255,6 +228,7 @@ const styles = StyleSheet.create({
   buttton2: {
     alignItems: "center",
     marginTop: 0,
+    backgroundColor: "gray",
   },
   dropdown: {
     alignItems: "center",
@@ -264,9 +238,7 @@ const styles = StyleSheet.create({
     width: 200,
     marginTop: 10,
   },
-  speedDial: {
-
-  }
+  speedDial: {},
 });
 
 export default Nuevogasto;
