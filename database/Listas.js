@@ -1,14 +1,16 @@
 const categorias = [
     'Salud',
-    'Supermercado',
+    'Almacen y Supermercado',
     'Niñera/Limpieza',
     'Cuota (colegio-natación)',
     'Verdulería',
     'Impuestos',
     'Pago Tarjeta de Crédito',
-    'Ropa',
+    'Indumentaria',
     'Carnicería',
     'Librería',
+    'Nafta',
+    'Salidas',
     'Otros gastos'
 ];
 
@@ -23,14 +25,16 @@ const color = [
     'thistle',
     'tomato',
     'lightskyblue',
-    'orangered'
+    'midnightblue',
+    'orangered',
+    'lightseagreen'
 ]
 const formadePago = [
 'Tarjeta de Crédito',
 'Tarjeta de Débito',
 'Efectivo',
-'Billetera Santa Fe',
-'Personal Pay con descuento ',
+'Billetera S. Fe (-30%)',
+'Personal Pay (-20%) ',
 'Donaciones',
 'Otros',
 ];

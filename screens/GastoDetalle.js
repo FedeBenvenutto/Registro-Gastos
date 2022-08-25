@@ -1,4 +1,13 @@
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  deleteDoc,
+  doc,
+  getDoc,
+  setDoc,
+  query,
+  collection,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "../database/firebase.js";
 import React, { useEffect, useState, useContext, useLayoutEffect } from "react";
 import {
@@ -18,8 +27,7 @@ import { useNavigation } from "@react-navigation/native";
 import SpeedDialComp from "../Component/SpeedDial.js";
 
 const GastoDetalle = (props) => {
-  // HOOKS NECESARIOS
-
+  // HOOKS
   const { fechaDb } = useContext(FechaContext);
   const navigation = useNavigation();
   useLayoutEffect(() => {
@@ -45,8 +53,7 @@ const GastoDetalle = (props) => {
   const [loading, setLoading] = useState(true);
 
   //FUNCIONES
-
-  const getUserById = async (id) => {
+  const getGastoById = async (id) => {
     const docRef = doc(db, fechaDb, id);
     await getDoc(docRef).then((doc) => {
       const gasto = doc.data();
@@ -84,13 +91,40 @@ const GastoDetalle = (props) => {
 
   const actualizarGasto = async () => {
     try {
-      let monto = Number(gasto.Monto.replace(/,/g, "."));
+      let monto =
+        typeof gasto.Monto === "string"
+          ? Number(gasto.Monto.replace(/,/g, "."))
+          : gasto.Monto;
+      let fpindex = gasto.FormadePagoIndex;
       if (!monto || monto < 0) {
         Alert.alert("", "Ingrese un monto válido");
       } else if (isNaN(gasto.CategoriaIndex) || isNaN(gasto.FormadePagoIndex)) {
         Alert.alert("", "Complete todos los campos");
       } else {
         setLoading(true);
+        if (fpindex === 3) {
+          let montoBilletera = 0;
+          const q = query(
+            collection(db, fechaDb),
+            where("FormadePagoIndex", "==", 3)
+          );
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            montoBilletera += Number(doc.data().Monto);
+          });
+          if (montoBilletera + (montoBilletera * 30) / 100 + monto < 33332) {
+            monto = monto - (monto * 30) / 100;
+          } else if (montoBilletera + (montoBilletera * 30) / 100 < 33332) {
+            monto =
+              monto -
+              (10000 -
+                ((montoBilletera + (montoBilletera * 30) / 100) * 30) / 100);
+          }
+        }
+        fpindex === 4 && monto < 2500
+          ? (monto = monto - (monto * 20) / 100)
+          : "";
+        fpindex === 4 && monto > 2500 ? (monto = monto - 500) : "";
         const docRef = doc(db, fechaDb, props.route.params.gastoId);
         const data = {
           Monto: monto,
@@ -112,7 +146,7 @@ const GastoDetalle = (props) => {
   };
 
   useEffect(() => {
-    getUserById(props.route.params.gastoId);
+    getGastoById(props.route.params.gastoId);
   }, []);
 
   if (loading) {

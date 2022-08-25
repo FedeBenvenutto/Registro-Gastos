@@ -1,4 +1,4 @@
-import React, { useState, useContext, useLayoutEffect } from "react";
+import React, { useContext, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -11,27 +11,13 @@ import { Button } from "@rneui/themed";
 import SelectDropdown from "react-native-select-dropdown";
 import { FechaContext } from "../Context/FechaContext";
 import { useNavigation } from "@react-navigation/native";
+import SpeedDialComp from "../Component/SpeedDial.js";
 
 const CambioColeccion = (props) => {
   const FechaActual = new Date();
   const AnoActual = FechaActual.getFullYear().toString();
-  const Meses = [
-    "enero",
-    "febrero",
-    "marzo",
-    "abril",
-    "mayo",
-    "junio",
-    "julio",
-    "agosto",
-    "septiembre",
-    "octubre",
-    "noviembre",
-    "diciembre",
-  ];
   const MesActual = FechaActual.getMonth();
-  const { fechaDb, setMes, setAno } = useContext(FechaContext);
-
+  const { fechaDb, setMes, setAno, Meses } = useContext(FechaContext);
   const navigation = useNavigation();
   var mesSeleccionado;
   var anoSeleccionado = AnoActual;

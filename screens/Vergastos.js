@@ -12,7 +12,7 @@ import SpeedDialComp from "../Component/SpeedDial.js";
 const Vergastos = (props) => {
   const [gastos, setGastos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { fechaDb } = useContext(FechaContext);
+  const { fechaDb, Meses, DiasSemana } = useContext(FechaContext);
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -57,6 +57,18 @@ const Vergastos = (props) => {
       <View>
         <ScrollView>
           {gastos.map((gasto) => {
+            var dia = gasto.createdAt.toDate().getDate();
+            var mes = Meses[gasto.createdAt.toDate().getMonth()].slice(0, 3);
+            var diasemana = DiasSemana[gasto.createdAt.toDate().getDay()].slice(
+              0,
+              3
+            );
+            var hora = gasto.createdAt.toDate().getHours();
+            var minuto = String(gasto.createdAt.toDate().getMinutes());
+            if (minuto.length === 1) {
+              minuto = "0" + minuto;
+            }
+
             return (
               <ListItem
                 key={gasto.id}
@@ -67,7 +79,6 @@ const Vergastos = (props) => {
                   });
                 }}
               >
-                {/* <ListItem.Chevron /> */}
                 <Avatar
                   size={45}
                   rounded
@@ -88,10 +99,7 @@ const Vergastos = (props) => {
                     Comentario: {gasto.Comentario}
                   </ListItem.Subtitle>
                   <ListItem.Subtitle>
-                    Fecha de carga:{" "}
-                    {new Date(gasto.createdAt.toDate())
-                      .toString()
-                      .slice(0, -15)}
+                    Fecha de carga: {diasemana} {dia} {mes} {hora}:{minuto}
                   </ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>

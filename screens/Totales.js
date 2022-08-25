@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
-import {
-  Button,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Text,
-} from "react-native";
-import { ListItem, SpeedDial } from "@rneui/themed";
+import { StyleSheet, View, ActivityIndicator, Text } from "react-native";
+import { ListItem } from "@rneui/themed";
 import { ScrollView } from "react-native-gesture-handler";
 import { db } from "../database/firebase.js";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
@@ -14,14 +8,18 @@ import { FechaContext } from "../Context/FechaContext.js";
 import { useNavigation } from "@react-navigation/native";
 import { categorias, formadePago } from "../database/Listas.js";
 import SpeedDialComp from "../Component/SpeedDial.js";
+import GraficoTorta from "../Component/GraficoTorta.js";
 
 const Vergastos = (props) => {
   const [gastos, setGastos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { fechaDb } = useContext(FechaContext);
+  const { fechaDb, Meses, MesActual, Mes, DiaActual, AnoActual } =
+    useContext(FechaContext);
   const [expanded, setExpanded] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
+  const [expanded4, setExpanded4] = useState(false);
+  const [expanded5, setExpanded5] = useState(false);
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -36,7 +34,7 @@ const Vergastos = (props) => {
 
   useEffect(() => {
     const collectionRef = collection(db, fechaDb);
-    const q = query(collectionRef, orderBy("createdAt", "desc"));
+    const q = query(collectionRef);
     const unsuscribe = onSnapshot(q, (querySnapshot) => {
       setGastos(
         querySnapshot.docs.map((doc) => ({
@@ -62,26 +60,21 @@ const Vergastos = (props) => {
     );
   }
   var sumaTotal = 0;
-  var sumaCat = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-    7: 0,
-    8: 0,
-    9: 0,
-    10: 0,
-  };
-  var sumaFp = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+  var sumaCat = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  var sumaFp = [0, 0, 0, 0, 0, 0, 0];
+  var promedioDiario;
   gastos.forEach((gasto) => {
     sumaTotal += Number(gasto.Monto);
     sumaCat[gasto.CategoriaIndex] += Number(gasto.Monto);
     sumaFp[gasto.FormadePagoIndex] += Number(gasto.Monto);
   });
-
+  if (Mes === Meses[MesActual]) {
+    promedioDiario = sumaTotal / DiaActual;
+  } else {
+    let mesbase = Meses.indexOf(Mes) + 1;
+    let indice = new Date(Number(AnoActual), mesbase, 0).getDate();
+    promedioDiario = sumaTotal / indice;
+  }
   return (
     <>
       <View style={styles.container}>
@@ -104,6 +97,27 @@ const Vergastos = (props) => {
             <ListItem.Content>
               <ListItem.Title style={styles.text3}>
                 $ {sumaTotal}
+              </ListItem.Title>
+            </ListItem.Content>
+          </ListItem.Accordion>
+          <ListItem.Accordion
+            content={
+              <>
+                <ListItem.Content>
+                  <ListItem.Title style={styles.text}>
+                    PROMEDIO DIARIO
+                  </ListItem.Title>
+                </ListItem.Content>
+              </>
+            }
+            isExpanded={expanded4}
+            onPress={() => {
+              setExpanded4(!expanded4);
+            }}
+          >
+            <ListItem.Content>
+              <ListItem.Title style={styles.text3}>
+                $ {promedioDiario}
               </ListItem.Title>
             </ListItem.Content>
           </ListItem.Accordion>
@@ -155,6 +169,25 @@ const Vergastos = (props) => {
               ))}
             </ListItem.Content>
           </ListItem.Accordion>
+          <ListItem.Accordion
+            content={
+              <>
+                <ListItem.Content>
+                  <ListItem.Title style={styles.text}>
+                    GRAFICO Y PORCENTAJE
+                  </ListItem.Title>
+                </ListItem.Content>
+              </>
+            }
+            isExpanded={expanded5}
+            onPress={() => {
+              setExpanded5(!expanded5);
+            }}
+          >
+            <ListItem.Content>
+              <GraficoTorta sumaCat={sumaCat} sumaTotal={sumaTotal} />
+            </ListItem.Content>
+          </ListItem.Accordion>
         </ScrollView>
       </View>
       <SpeedDialComp />
@@ -176,7 +209,6 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "#68E9FF",
     padding: 30,
-    // marginBottom: 10,
     borderRadius: 5,
     marginTop: 19,
   },

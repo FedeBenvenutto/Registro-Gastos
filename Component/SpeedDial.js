@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { SpeedDial } from "@rneui/base";
 import { useNavigation } from "@react-navigation/native";
 
-const SpeedDialComp = (props) => {
+const SpeedDialComp = () => {
     const [open, setOpen] = useState(false);
     const navigation = useNavigation()
     return (

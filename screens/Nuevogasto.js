@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Button } from "@rneui/themed";
 import { db } from "../database/firebase.js";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import SelectDropdown from "react-native-select-dropdown";
 import { categorias, formadePago } from "../database/Listas.js";
 import { FechaContext } from "../Context/FechaContext.js";
@@ -18,7 +18,6 @@ import SpeedDialComp from "../Component/SpeedDial.js";
 
 const Nuevogasto = (props) => {
   const { fechaDb } = useContext(FechaContext);
-
   const [gasto, setGasto] = useState({
     Monto: "",
     Categoria: "",
@@ -30,13 +29,38 @@ const Nuevogasto = (props) => {
   const [loading, setLoading] = useState(false);
   const saveNewGasto = async () => {
     let monto = Number(gasto.Monto.replace(/,/g, "."));
+    let fpindex = gasto.FormadePagoIndex;
     if (!monto || monto < 0) {
       Alert.alert("", "Ingrese un monto válido");
     } else if (isNaN(gasto.CategoriaIndex) || isNaN(gasto.FormadePagoIndex)) {
       Alert.alert("", "Complete todos los campos");
-    } else {
+    } else
       try {
         setLoading(true);
+        if (fpindex === 3) {
+          let montoBilletera = 0;
+          const q = query(
+            collection(db, fechaDb),
+            where("FormadePagoIndex", "==", 3)
+          );
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            montoBilletera += Number(doc.data().Monto);
+          });
+          if (montoBilletera + (montoBilletera * 30) / 100 + monto < 33332) {
+            monto = monto - (monto * 30) / 100;
+          } else if (montoBilletera + (montoBilletera * 30) / 100 < 33332) {
+            monto =
+              monto -
+              (10000 -
+                ((montoBilletera + (montoBilletera * 30) / 100) * 30) / 100);
+          }
+        }
+        fpindex === 4 && monto < 2500
+          ? (monto = monto - (monto * 20) / 100)
+          : "";
+        fpindex === 4 && monto > 2500 ? (monto = monto - 500) : "";
+
         const docRef = await addDoc(collection(db, fechaDb), {
           Monto: monto,
           Categoria: gasto.Categoria,
@@ -60,9 +84,7 @@ const Nuevogasto = (props) => {
         setLoading(false);
         alert(e);
       }
-    }
   };
-
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -172,7 +194,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   container: {
-    marginTop: 0,
+
   },
   loader: {
     left: 0,
@@ -238,7 +260,6 @@ const styles = StyleSheet.create({
     width: 200,
     marginTop: 10,
   },
-  speedDial: {},
 });
 
 export default Nuevogasto;

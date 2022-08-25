@@ -5,7 +5,17 @@
     const FechaActual = new Date();
     const AnoActual= (FechaActual.getFullYear()).toString();
     const Meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    const DiasSemana = [
+      'Domingo',
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+    ];
     const MesActual= FechaActual.getMonth()
+    const DiaActual= FechaActual.getDate()
     const [Mes, setMes] = useState(Meses[MesActual]);
     const [Ano, setAno] = useState(AnoActual);
     const fechaDb= Mes+"-"+Ano
@@ -14,7 +24,14 @@
         value={{
           setMes,
           setAno,
-          fechaDb
+          fechaDb,
+          Mes,
+          Ano,
+          Meses,
+          MesActual,
+          DiaActual,
+          AnoActual,
+          DiasSemana
         }}
         >
         {children}
