@@ -299,10 +299,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginStart: 25,
   },
-  buttton2: {
-    alignItems: "center",
-    marginTop: 0,
-  },
   dropdown: {
     alignItems: "center",
     borderWidth: 0.5,

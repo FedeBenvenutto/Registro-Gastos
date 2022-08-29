@@ -96,7 +96,7 @@ const Vergastos = (props) => {
           >
             <ListItem.Content>
               <ListItem.Title style={styles.text3}>
-                $ {sumaTotal}
+                $ {sumaTotal.toFixed(2)}
               </ListItem.Title>
             </ListItem.Content>
           </ListItem.Accordion>
@@ -117,7 +117,7 @@ const Vergastos = (props) => {
           >
             <ListItem.Content>
               <ListItem.Title style={styles.text3}>
-                $ {promedioDiario}
+                $ {promedioDiario.toFixed(2)}
               </ListItem.Title>
             </ListItem.Content>
           </ListItem.Accordion>
@@ -140,7 +140,7 @@ const Vergastos = (props) => {
               {categorias.map((gasto, i) => (
                 <ListItem.Title style={styles.text2} key={i}>
                   {" "}
-                  {categorias[i]} : $ {sumaCat[i]}
+                  {categorias[i]} : $ {sumaCat[i].toFixed(2)}
                 </ListItem.Title>
               ))}
             </ListItem.Content>
@@ -164,7 +164,7 @@ const Vergastos = (props) => {
               {formadePago.map((gasto, i) => (
                 <ListItem.Title style={styles.text2} key={i}>
                   {" "}
-                  {formadePago[i]} : $ {sumaFp[i]}
+                  {formadePago[i]} : $ {sumaFp[i].toFixed(2)}
                 </ListItem.Title>
               ))}
             </ListItem.Content>
@@ -206,12 +206,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  header: {
-    backgroundColor: "#68E9FF",
-    padding: 30,
-    borderRadius: 5,
-    marginTop: 19,
-  },
   text: {
     fontSize: 20,
     opacity: 0.6,
@@ -235,12 +229,6 @@ const styles = StyleSheet.create({
     backgroundColor: "darkkhaki",
     width: 400,
   },
-  content: {
-    width: "90%",
-    padding: 50,
-    backgroundColor: "#E85F53",
-  },
-  Accordion: {},
 });
 
 export default Vergastos;

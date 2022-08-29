@@ -59,10 +59,7 @@ const Vergastos = (props) => {
           {gastos.map((gasto) => {
             var dia = gasto.createdAt.toDate().getDate();
             var mes = Meses[gasto.createdAt.toDate().getMonth()].slice(0, 3);
-            var diasemana = DiasSemana[gasto.createdAt.toDate().getDay()].slice(
-              0,
-              3
-            );
+            var diasemana = DiasSemana[gasto.createdAt.toDate().getDay()].slice(0,3);
             var hora = gasto.createdAt.toDate().getHours();
             var minuto = String(gasto.createdAt.toDate().getMinutes());
             if (minuto.length === 1) {
@@ -82,7 +79,7 @@ const Vergastos = (props) => {
                 <Avatar
                   size={45}
                   rounded
-                  title={categorias[gasto.CategoriaIndex][0]}
+                  title={gasto.Categoria[0]}
                   containerStyle={{
                     backgroundColor: color[gasto.CategoriaIndex],
                   }}

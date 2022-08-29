@@ -75,8 +75,8 @@ const Nuevogasto = (props) => {
           Categoria: "",
           FormadePago: "",
           Comentario: "",
-          CategoriaIndex: "",
-          FormadePagoIndex: "",
+          CategoriaIndex: "x",
+          FormadePagoIndex: "x",
         });
         setLoading(false);
         Alert.alert("", "Agregado");

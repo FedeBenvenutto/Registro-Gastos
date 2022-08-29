@@ -37,6 +37,7 @@ const GraficoTorta = ({ sumaCat, sumaTotal }) => {
             flexDirection: "row",
             marginStart: 50,
           }}
+          key={i} 
         >
           <Text
             style={{

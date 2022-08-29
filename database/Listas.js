@@ -6,7 +6,7 @@ const categorias = [
     'Verdulería',
     'Impuestos',
     'Pago Tarjeta de Crédito',
-    'Indumentaria',
+    'Ropa-Calzado',
     'Carnicería',
     'Librería',
     'Nafta',
