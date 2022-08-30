@@ -134,6 +134,8 @@ const Nuevogasto = (props) => {
             }}
             buttonStyle={styles.dropdown}
             defaultButtonText={"Seleccione una opción"}
+            dropdownStyle={{marginStart: -60, width: 260}}
+            rowStyle={styles.dropdown1RowStyle}
           />
         </SafeAreaView>
         <SafeAreaView style={styles.formulario}>
@@ -148,6 +150,7 @@ const Nuevogasto = (props) => {
                 FormadePagoIndex: index,
               });
             }}
+            dropdownStyle={{marginStart: -60, width: 260}}
             defaultButtonText={"Seleccione una opción"}
           />
         </SafeAreaView>

@@ -186,7 +186,7 @@ const GastoDetalle = (props) => {
             buttonStyle={styles.dropdown}
             defaultValueByIndex={gasto.CategoriaIndex}
             defaultButtonText={"Seleccione una opción"}
-            rowTextStyle={{ textAlign: "left" }}
+            dropdownStyle={{marginStart: -60, width: 260}}
           />
         </SafeAreaView>
         <SafeAreaView style={styles.formulario}>
@@ -203,7 +203,7 @@ const GastoDetalle = (props) => {
             }}
             defaultValueByIndex={gasto.FormadePagoIndex}
             defaultButtonText={"Seleccione una opción"}
-            rowTextStyle={{ textAlign: "left" }}
+            dropdownStyle={{marginStart: -60, width: 260}}
           />
         </SafeAreaView>
         <SafeAreaView style={styles.formulario}>
