@@ -124,7 +124,7 @@ const GastoDetalle = (props) => {
         fpindex === 4 && monto < 2500
           ? (monto = monto - (monto * 20) / 100)
           : "";
-        fpindex === 4 && monto > 2500 ? (monto = monto - 500) : "";
+        fpindex === 4 && monto >= 2500 ? (monto = monto - 500) : "";
         const docRef = doc(db, fechaDb, props.route.params.gastoId);
         const data = {
           Monto: monto,
