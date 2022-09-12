@@ -2,9 +2,10 @@ import React from "react";
 import { categorias, color } from "../database/Listas";
 import { VictoryPie } from "victory-native";
 import { Svg } from "react-native-svg";
-import { View, Text } from "react-native";
+import { View, Text, useWindowDimensions } from "react-native";
 
 const GraficoTorta = ({ sumaCat, sumaTotal }) => {
+  const { height, width } = useWindowDimensions();
   let datos = categorias.map((item, i) => {
     return {
       categoria: categorias[i],
@@ -17,13 +18,13 @@ const GraficoTorta = ({ sumaCat, sumaTotal }) => {
   return (
     <View>
       <View>
-        <Svg width="500" height="400" style={{ width: "100%", height: "auto" }}>
+        <Svg width="100%" height={height/2}  style={{ width: "100%", height: "auto" }}>
           <VictoryPie
             data={datos}
             labels={({ datum }) => `${datum.id}`}
             labelRadius={({ innerRadius }) => innerRadius + 100}
             style={{
-              labels: { fill: "white", fontSize: 15, fontWeight: "bold" },
+              labels: { fill: "white", fontSize: height*0.019, fontWeight: "bold" },
             }}
             colorScale={color}
           />
@@ -41,8 +42,8 @@ const GraficoTorta = ({ sumaCat, sumaTotal }) => {
         >
           <Text
             style={{
-              width: 40,
-              height: 20,
+              width: width/10,
+              height: height/39,
               backgroundColor: item.color,
               borderRadius: 5,
               textAlign: "center",

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
-import { StyleSheet, View, ActivityIndicator, Text } from "react-native";
+import { StyleSheet, View, ActivityIndicator, Text, Dimensions } from "react-native";
 import { ListItem } from "@rneui/themed";
 import { ScrollView } from "react-native-gesture-handler";
 import { db } from "../database/firebase.js";
@@ -10,7 +10,8 @@ import { categorias, formadePago } from "../database/Listas.js";
 import SpeedDialComp from "../Component/SpeedDial.js";
 import GraficoTorta from "../Component/GraficoTorta.js";
 
-const Vergastos = (props) => {
+var heightY = Dimensions.get("window").height;
+const Totales = (props) => {
   const [gastos, setGastos] = useState([]);
   const [loading, setLoading] = useState(true);
   const { fechaDb, Meses, MesActual, Mes, DiaActual, AnoActual } =
@@ -207,28 +208,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   text: {
-    fontSize: 20,
+    fontSize: heightY * 0.026,
     opacity: 0.6,
     textAlign: "center",
     fontWeight: "bold",
     marginStart: 10,
   },
   text2: {
-    fontSize: 18,
+    fontSize: heightY * 0.024,
     opacity: 0.6,
     textAlign: "center",
     fontWeight: "bold",
     backgroundColor: "darkkhaki",
-    width: 400,
+    width: '100%',
   },
   text3: {
-    fontSize: 20,
+    fontSize: heightY * 0.026,
     opacity: 0.6,
     textAlign: "center",
     fontWeight: "bold",
     backgroundColor: "darkkhaki",
-    width: 400,
+    width: '100%',
   },
 });
 
-export default Vergastos;
+export default Totales;

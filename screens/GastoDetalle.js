@@ -18,6 +18,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  useWindowDimensions
 } from "react-native";
 import { Button } from "@rneui/themed";
 import SelectDropdown from "react-native-select-dropdown";
@@ -28,6 +29,7 @@ import SpeedDialComp from "../Component/SpeedDial.js";
 
 const GastoDetalle = (props) => {
   // HOOKS
+  
   const { fechaDb } = useContext(FechaContext);
   const navigation = useNavigation();
   useLayoutEffect(() => {
@@ -148,7 +150,7 @@ const GastoDetalle = (props) => {
   useEffect(() => {
     getGastoById(props.route.params.gastoId);
   }, []);
-
+  const { height, width } = useWindowDimensions();
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -186,7 +188,7 @@ const GastoDetalle = (props) => {
             buttonStyle={styles.dropdown}
             defaultValueByIndex={gasto.CategoriaIndex}
             defaultButtonText={"Seleccione una opción"}
-            dropdownStyle={{marginStart: -60, width: 260}}
+            dropdownStyle={{marginStart: -60, width: width/1.5}}
           />
         </SafeAreaView>
         <SafeAreaView style={styles.formulario}>
@@ -203,7 +205,7 @@ const GastoDetalle = (props) => {
             }}
             defaultValueByIndex={gasto.FormadePagoIndex}
             defaultButtonText={"Seleccione una opción"}
-            dropdownStyle={{marginStart: -60, width: 260}}
+            dropdownStyle={{marginStart: -60, width: width/1.5}}
           />
         </SafeAreaView>
         <SafeAreaView style={styles.formulario}>
@@ -266,7 +268,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    width: 200,
+    width: '49%',
     alignContent: "center",
     alignItems: "center",
     textAlign: "center",
@@ -277,7 +279,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 0.5,
     padding: 10,
-    minWidth: 200,
+    width: '49%',
     fontSize: 15,
     borderRadius: 10,
     textAlign: "center",
@@ -286,15 +288,14 @@ const styles = StyleSheet.create({
     height: 60,
     borderWidth: 0.5,
     padding: 10,
-    minWidth: 200,
-    maxWidth: 225,
+    width: '49%',
     fontSize: 15,
     borderRadius: 10,
     marginTop: 10,
     textAlign: "center",
   },
   buttton: {
-    width: 320,
+    width: '88%',
     alignContent: "center",
     marginTop: 10,
     marginStart: 25,
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "#444",
     borderRadius: 10,
-    width: 200,
+    width: '49%',
     alignContent: "center",
     marginTop: 10,
   },

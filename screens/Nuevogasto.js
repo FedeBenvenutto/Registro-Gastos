@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  useWindowDimensions
 } from "react-native";
 import { Button } from "@rneui/themed";
 import { db } from "../database/firebase.js";
@@ -16,7 +17,9 @@ import { categorias, formadePago } from "../database/Listas.js";
 import { FechaContext } from "../Context/FechaContext.js";
 import SpeedDialComp from "../Component/SpeedDial.js";
 
+
 const Nuevogasto = (props) => {
+  const { height, width } = useWindowDimensions();
   const { fechaDb } = useContext(FechaContext);
   const [gasto, setGasto] = useState({
     Monto: "",
@@ -134,7 +137,7 @@ const Nuevogasto = (props) => {
             }}
             buttonStyle={styles.dropdown}
             defaultButtonText={"Seleccione una opción"}
-            dropdownStyle={{marginStart: -60, width: 260}}
+            dropdownStyle={{marginStart: -60, width: width/1.5}}
             rowStyle={styles.dropdown1RowStyle}
           />
         </SafeAreaView>
@@ -150,7 +153,7 @@ const Nuevogasto = (props) => {
                 FormadePagoIndex: index,
               });
             }}
-            dropdownStyle={{marginStart: -60, width: 260}}
+            dropdownStyle={{marginStart: -60, width: width/1.5}}
             defaultButtonText={"Seleccione una opción"}
           />
         </SafeAreaView>
@@ -213,7 +216,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    width: 200,
+    width: '49%',
     alignContent: "center",
     alignItems: "center",
     textAlign: "center",
@@ -224,7 +227,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 0.5,
     padding: 10,
-    minWidth: 200,
+    minWidth: '49%',
     fontSize: 15,
     borderRadius: 10,
     textAlign: "center",
@@ -233,8 +236,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderWidth: 0.5,
     padding: 10,
-    minWidth: 200,
-    maxWidth: 225,
+    width: '49%',
     fontSize: 15,
     borderRadius: 10,
     marginTop: 10,
@@ -245,7 +247,7 @@ const styles = StyleSheet.create({
     height: 0,
   },
   buttton: {
-    width: 320,
+    width: '88%',
     alignContent: "center",
     marginTop: 10,
     marginStart: 25,
@@ -260,7 +262,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "#444",
     borderRadius: 10,
-    width: 200,
+    width: '49%',
     marginTop: 10,
   },
 });
