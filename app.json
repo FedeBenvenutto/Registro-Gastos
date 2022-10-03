@@ -25,10 +25,15 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.federicoand.Registrogastos"
+      "package": "com.federicoand.registrogastos"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4ab69aa6-8a04-49a9-83e9-d1f861a07999"
+      }
     }
   }
 }

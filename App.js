@@ -1,3 +1,4 @@
+import React, {useContext} from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -8,9 +9,14 @@ import GastoDetalle from "./screens/GastoDetalle";
 import CambioColeccion from "./screens/CambioColeccion";
 import Totales from "./screens/Totales";
 import {FechaProvider} from "./Context/FechaContext";
+import { UserContext, UserProvider } from "./Context/UserContext";
+import Login from "./screens/Login";
+
 
 const Stack = createStackNavigator();
 function MyStack() {
+  const {user} = useContext(UserContext)
+  if (!user) { return <Login />}
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -41,13 +47,16 @@ function MyStack() {
     </Stack.Navigator>
   );
 }
+
 export default function App() {
   return (
+    <UserProvider >
     <FechaProvider>
     <NavigationContainer>
-      <MyStack />
+      <MyStack /> 
     </NavigationContainer>
     </FechaProvider>
+    </UserProvider>
   );
 }
 

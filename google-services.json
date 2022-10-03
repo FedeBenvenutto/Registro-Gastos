@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "370676180770",
+    "project_id": "registro-gastos3",
+    "storage_bucket": "registro-gastos3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:370676180770:android:16c0d88b11187c047b277b",
+        "android_client_info": {
+          "package_name": "com.federicoand.registrogastos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "370676180770-89215l3ec70vg5711s6rng1qng1q116k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoxeKsXHHaPAmR6VKhh53FWg27ZC7vAWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "370676180770-89215l3ec70vg5711s6rng1qng1q116k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
