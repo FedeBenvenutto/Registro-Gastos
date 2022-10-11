@@ -7,13 +7,14 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
-import { UserContext } from "../Context/UserContext";
+// import { UserContext } from "../Context/UserContext";
+import { UserContext } from "../database/firebase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Login = () => {
-  const [nombre, setNombre] = useState();
-  const {setLoading, loading, setUser} = useContext(UserContext);
+  // const [nombre, setNombre] = useState();
+  const {setLoading, loading, setUser, promptAsync} = useContext(UserContext);
   useEffect(() => {
     AsyncStorage.getItem("User")
     .then ((value) => {if (value) {
@@ -37,7 +38,7 @@ const Login = () => {
   return (
     <SafeAreaView>
       <Text style={styles.container}>REGISTRO DE GASTOS</Text>
-      <Text style={styles.container}> Por favor seleccione un Usuario: </Text>
+      {/* <Text style={styles.container}> Por favor seleccione un Usuario: </Text>
 
       <Text style={styles.container}> Crear nuevo usuario</Text>
       <SafeAreaView style={styles.formulario}>
@@ -47,8 +48,8 @@ const Login = () => {
             value={nombre}
             onChangeText={(value) => setNombre(value)}
           ></TextInput>
-        </SafeAreaView>
-      {/* <Button
+        </SafeAreaView> */}
+      <Button
         onPress={() => {
           setLoading(true);
           promptAsync() ;
@@ -56,7 +57,7 @@ const Login = () => {
         containerStyle={styles.buttton}
       >
         INICIAR SESIÓN CON GOOGLE
-      </Button> */}
+      </Button>
     </SafeAreaView>
   );
 }

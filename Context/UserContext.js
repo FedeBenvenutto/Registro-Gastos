@@ -13,8 +13,8 @@ export const UserProvider = ({ children }) => {
         user,
         setUser,
         // promptAsync,
-        // setLoading,
-        // loading,
+        setLoading,
+        loading,
       }}
     >
       {children}

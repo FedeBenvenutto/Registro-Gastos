@@ -9,7 +9,7 @@ import GastoDetalle from "./screens/GastoDetalle";
 import CambioColeccion from "./screens/CambioColeccion";
 import Totales from "./screens/Totales";
 import {FechaProvider} from "./Context/FechaContext";
-import { UserContext, UserProvider } from "./Context/UserContext";
+import { UserContext, UserProvider } from "./database/firebase";
 import Login from "./screens/Login";
 
 
