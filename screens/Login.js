@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   // const [nombre, setNombre] = useState();
-  const {setLoading, loading, setUser, promptAsync} = useContext(UserContext);
+  const {setLoading, loading, setUser, loginAsync} = useContext(UserContext);
   useEffect(() => {
     AsyncStorage.getItem("User")
     .then ((value) => {if (value) {
@@ -52,7 +52,7 @@ const Login = () => {
       <Button
         onPress={() => {
           setLoading(true);
-          promptAsync() ;
+          loginAsync();
         }}
         containerStyle={styles.buttton}
       >

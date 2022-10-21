@@ -28,6 +28,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.federicoand.registrogastos"/>
         <data android:scheme="com.federicoand.registrogastos"/>
+        <data android:scheme="exp+registro-gastos"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

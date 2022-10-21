@@ -3,6 +3,7 @@
     "name": "Registro-gastos",
     "slug": "Registro-gastos",
     "version": "1.0.0",
+    "scheme": "com.federicoand.registrogastos",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
