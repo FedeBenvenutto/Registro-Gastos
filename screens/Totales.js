@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import { categorias, formadePago } from "../database/Listas.js";
 import SpeedDialComp from "../Component/SpeedDial.js";
 import GraficoTorta from "../Component/GraficoTorta.js";
+import { UserContext } from "../Context/UserContext";
 
 var heightY = Dimensions.get("window").height;
 const Totales = (props) => {
@@ -16,6 +17,7 @@ const Totales = (props) => {
   const [loading, setLoading] = useState(true);
   const { fechaDb, Meses, MesActual, Mes, DiaActual, AnoActual } =
     useContext(FechaContext);
+  const { proyectId } = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
@@ -34,7 +36,7 @@ const Totales = (props) => {
   }, [navigation]);
 
   useEffect(() => {
-    const collectionRef = collection(db, fechaDb);
+    const collectionRef = collection(db, "Registros", proyectId,  fechaDb);
     const q = query(collectionRef);
     const unsuscribe = onSnapshot(q, (querySnapshot) => {
       setGastos(

@@ -26,12 +26,14 @@ import { categorias, formadePago } from "../database/Listas.js";
 import { FechaContext } from "../Context/FechaContext.js";
 import { useNavigation } from "@react-navigation/native";
 import SpeedDialComp from "../Component/SpeedDial.js";
+import { UserContext } from "../Context/UserContext";
 
 const GastoDetalle = (props) => {
-  // HOOKS
   
+  const { proyectId } = useContext(UserContext);
   const { fechaDb } = useContext(FechaContext);
   const navigation = useNavigation();
+  // HOOKS
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -56,7 +58,7 @@ const GastoDetalle = (props) => {
 
   //FUNCIONES
   const getGastoById = async (id) => {
-    const docRef = doc(db, fechaDb, id);
+    const docRef = doc(db, "Registros", proyectId,  fechaDb, id);
     await getDoc(docRef).then((doc) => {
       const gasto = doc.data();
       setGasto({ ...gasto, id: doc.id });
@@ -67,7 +69,7 @@ const GastoDetalle = (props) => {
   const borrarGasto = async () => {
     try {
       setLoading(true);
-      const docRef = doc(db, fechaDb, props.route.params.gastoId);
+      const docRef = doc(db, "Registros", proyectId,  fechaDb, props.route.params.gastoId);
       await deleteDoc(docRef);
       setLoading(false);
       Alert.alert("", "Borrado");
@@ -107,7 +109,7 @@ const GastoDetalle = (props) => {
         if (fpindex === 3) {
           let montoBilletera = 0;
           const q = query(
-            collection(db, fechaDb),
+            collection(db, "Registros", proyectId,  fechaDb),
             where("FormadePagoIndex", "==", 3)
           );
           const querySnapshot = await getDocs(q);
@@ -127,7 +129,7 @@ const GastoDetalle = (props) => {
           ? (monto = monto - (monto * 20) / 100)
           : "";
         fpindex === 4 && monto >= 2500 ? (monto = monto - 500) : "";
-        const docRef = doc(db, fechaDb, props.route.params.gastoId);
+        const docRef = doc(db, "Registros", proyectId,  fechaDb, props.route.params.gastoId);
         const data = {
           Monto: monto,
           Categoria: gasto.Categoria,

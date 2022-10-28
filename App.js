@@ -1,6 +1,4 @@
-import React, {useContext} from "react";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Vergastos from "./screens/Vergastos";
@@ -8,15 +6,17 @@ import Nuevogasto from "./screens/Nuevogasto";
 import GastoDetalle from "./screens/GastoDetalle";
 import CambioColeccion from "./screens/CambioColeccion";
 import Totales from "./screens/Totales";
-import {FechaProvider} from "./Context/FechaContext";
-import { UserContext, UserProvider } from "./database/firebase";
+import { FechaProvider } from "./Context/FechaContext";
+import { UserContext, UserProvider } from "./Context/UserContext";
 import Login from "./screens/Login";
-
+import { NotificationsProvider } from "./Context/Notifications";
 
 const Stack = createStackNavigator();
 function MyStack() {
-  const {user} = useContext(UserContext)
-  if (!user) { return <Login />}
+  const { currentUserId } = useContext(UserContext);
+  if (!currentUserId) {
+    return <Login />;
+  }
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -50,21 +50,14 @@ function MyStack() {
 
 export default function App() {
   return (
-    <UserProvider >
-    <FechaProvider>
-    <NavigationContainer>
-      <MyStack /> 
-    </NavigationContainer>
-    </FechaProvider>
+    <UserProvider>
+      <NotificationsProvider>
+        <FechaProvider>
+          <NavigationContainer>
+            <MyStack />
+          </NavigationContainer>
+        </FechaProvider>
+      </NotificationsProvider>
     </UserProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

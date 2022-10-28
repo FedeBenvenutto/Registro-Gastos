@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:370676180770:android:16c0d88b11187c047b277b",
+        "mobilesdk_app_id": "1:370676180770:android:e9c228de382dc6317b277b",
         "android_client_info": {
-          "package_name": "com.federicoand.registrogastos"
+          "package_name": "com.federicoand.registrogastost"
         }
       },
       "oauth_client": [

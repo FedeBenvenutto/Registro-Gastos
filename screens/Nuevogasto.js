@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
-  useWindowDimensions
+  useWindowDimensions,
 } from "react-native";
 import { Button } from "@rneui/themed";
 import { db } from "../database/firebase.js";
@@ -16,11 +16,14 @@ import SelectDropdown from "react-native-select-dropdown";
 import { categorias, formadePago } from "../database/Listas.js";
 import { FechaContext } from "../Context/FechaContext.js";
 import SpeedDialComp from "../Component/SpeedDial.js";
-
+import { NotificationContext } from "../Context/Notifications";
+import { UserContext } from "../Context/UserContext";
 
 const Nuevogasto = (props) => {
   const { height, width } = useWindowDimensions();
+  const { sendPushNotification } = useContext(NotificationContext);
   const { fechaDb } = useContext(FechaContext);
+  const { proyectId } = useContext(UserContext);
   const [gasto, setGasto] = useState({
     Monto: "",
     Categoria: "",
@@ -43,7 +46,7 @@ const Nuevogasto = (props) => {
         if (fpindex === 3) {
           let montoBilletera = 0;
           const q = query(
-            collection(db, fechaDb),
+            collection(db, "Registros", proyectId, fechaDb),
             where("FormadePagoIndex", "==", 3)
           );
           const querySnapshot = await getDocs(q);
@@ -64,15 +67,19 @@ const Nuevogasto = (props) => {
           : "";
         fpindex === 4 && monto >= 2500 ? (monto = monto - 500) : "";
 
-        const docRef = await addDoc(collection(db, fechaDb), {
-          Monto: monto,
-          Categoria: gasto.Categoria,
-          FormadePago: gasto.FormadePago,
-          Comentario: gasto.Comentario,
-          CategoriaIndex: gasto.CategoriaIndex,
-          FormadePagoIndex: gasto.FormadePagoIndex,
-          createdAt: new Date(),
-        });
+        const docRef = await addDoc(
+          collection(db, "Registros", proyectId, fechaDb),
+          {
+            Monto: monto,
+            Categoria: gasto.Categoria,
+            FormadePago: gasto.FormadePago,
+            Comentario: gasto.Comentario,
+            CategoriaIndex: gasto.CategoriaIndex,
+            FormadePagoIndex: gasto.FormadePagoIndex,
+            createdAt: new Date(),
+          }
+        );
+        sendPushNotification({ gasto, monto });
         setGasto({
           Monto: "",
           Categoria: "",
@@ -81,6 +88,7 @@ const Nuevogasto = (props) => {
           CategoriaIndex: "x",
           FormadePagoIndex: "x",
         });
+
         setLoading(false);
         Alert.alert("", "Agregado");
       } catch (e) {
@@ -137,7 +145,7 @@ const Nuevogasto = (props) => {
             }}
             buttonStyle={styles.dropdown}
             defaultButtonText={"Seleccione una opción"}
-            dropdownStyle={{marginStart: -60, width: width/1.5}}
+            dropdownStyle={{ marginStart: -60, width: width / 1.5 }}
             rowStyle={styles.dropdown1RowStyle}
           />
         </SafeAreaView>
@@ -153,7 +161,7 @@ const Nuevogasto = (props) => {
                 FormadePagoIndex: index,
               });
             }}
-            dropdownStyle={{marginStart: -60, width: width/1.5}}
+            dropdownStyle={{ marginStart: -60, width: width / 1.5 }}
             defaultButtonText={"Seleccione una opción"}
           />
         </SafeAreaView>
@@ -199,9 +207,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontWeight: "bold",
   },
-  container: {
-
-  },
+  container: {},
   loader: {
     left: 0,
     right: 0,
@@ -216,7 +222,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    width: '49%',
+    width: "49%",
     alignContent: "center",
     alignItems: "center",
     textAlign: "center",
@@ -227,7 +233,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 0.5,
     padding: 10,
-    minWidth: '49%',
+    minWidth: "49%",
     fontSize: 15,
     borderRadius: 10,
     textAlign: "center",
@@ -236,7 +242,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderWidth: 0.5,
     padding: 10,
-    width: '49%',
+    width: "49%",
     fontSize: 15,
     borderRadius: 10,
     marginTop: 10,
@@ -247,7 +253,7 @@ const styles = StyleSheet.create({
     height: 0,
   },
   buttton: {
-    width: '88%',
+    width: "88%",
     alignContent: "center",
     marginTop: 10,
     marginStart: 25,
@@ -262,7 +268,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "#444",
     borderRadius: 10,
-    width: '49%',
+    width: "49%",
     marginTop: 10,
   },
 });

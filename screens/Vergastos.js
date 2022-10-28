@@ -8,8 +8,10 @@ import { FechaContext } from "../Context/FechaContext.js";
 import { useNavigation } from "@react-navigation/native";
 import { categorias, color } from "../database/Listas.js";
 import SpeedDialComp from "../Component/SpeedDial.js";
+import { UserContext } from "../Context/UserContext";
 
 const Vergastos = (props) => {
+  const { proyectId } = useContext(UserContext);
   const [gastos, setGastos] = useState([]);
   const [loading, setLoading] = useState(true);
   const { fechaDb, Meses, DiasSemana } = useContext(FechaContext);
@@ -26,7 +28,7 @@ const Vergastos = (props) => {
   }, [navigation]);
 
   useEffect(() => {
-    const collectionRef = collection(db, fechaDb);
+    const collectionRef = collection(db, "Registros", proyectId,  fechaDb);
     const q = query(collectionRef, orderBy("createdAt", "desc"));
     const unsuscribe = onSnapshot(q, (querySnapshot) => {
       setGastos(
