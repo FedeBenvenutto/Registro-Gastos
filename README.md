@@ -13,4 +13,5 @@ Usuarios de prueba: test@test.com y test2@test.com contraseña 123456
 ![WhatsApp Image 2022-10-31 at 17 49 08](https://user-images.githubusercontent.com/109160932/199107800-d653907f-79e3-41b5-92a8-4f0adcf34278.jpeg)
 ![WhatsApp Image 2022-10-31 at 17 49 09](https://user-images.githubusercontent.com/109160932/199107808-2446a714-303a-432f-87ce-07ccbe95c1ef.jpeg)
 ![WhatsApp Image 2022-10-31 at 17 49 09 (1)](https://user-images.githubusercontent.com/109160932/199107802-1ad0bc3b-7849-4295-8bfc-db176a200c3c.jpeg)
+![WhatsApp Image 2022-10-31 at 18 27 38](https://user-images.githubusercontent.com/109160932/199113903-779c26b2-ef13-4634-8d24-eee43956b8b3.jpeg)
 
