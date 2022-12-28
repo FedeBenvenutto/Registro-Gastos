@@ -18,7 +18,7 @@ import { NotificationContext } from "../Context/Notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const heightY = Dimensions.get("window").height;
-const Login = () => {
+const Login = ({expoPushToken}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nombre, setNombre] = useState("");
@@ -32,7 +32,8 @@ const Login = () => {
     setUsers,
     takeUsers,
   } = useContext(UserContext);
-  const { expoPushToken } = useContext(NotificationContext);
+  
+;
 
   useEffect(() => {
     setLoading(true);
